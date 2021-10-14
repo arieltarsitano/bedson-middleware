@@ -22,7 +22,7 @@ public class TestWrite extends HttpServlet {
             throws ServletException, IOException {
         PrintWriter out = response.getWriter();
         out.println(
-                "Please, use post request with next headers: server, port, user, pass, filedir (with name of file and extension).");
+                "Please, use post request with next headers: server, port, user, pass, filedir (with name of file and extension).     :D");
     }
 
     /**
@@ -43,19 +43,21 @@ public class TestWrite extends HttpServlet {
 
             ftpClient.connect(server, port);
             ftpClient.login(user, pass);
-            ftpClient.enterLocalActiveMode();
+            ftpClient.enterLocalPassiveMode();
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
             response.setContentType("application/octet-stream");
-            ServletOutputStream stream = response.getOutputStream();
             String initialString = body;
             InputStream inStream = new ByteArrayInputStream(initialString.getBytes());
-            ftpClient.storeFile(fileName, inStream);
+            Boolean status = ftpClient.storeFile(fileName, inStream);
+            response.setStatus(ftpClient.getReplyCode());
+            response.getWriter().write(ftpClient.getReplyString());
+            response.getWriter().flush();
             inStream.close();
-            stream.close();
         } catch (Exception e) {
             PrintWriter out = response.getWriter();
             out.println("Error is " + e.getMessage());
+            response.setStatus(400);
         } finally {
             if (ftpClient.isConnected()) {
                 ftpClient.logout();
