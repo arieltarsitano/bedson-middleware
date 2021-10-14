@@ -1,1 +1,6 @@
-/Users/ariel089/Workspaces/bedson-middleware/src/main/java/io/ctdev/kharchuk/SalesforceFTPConnector.java
+/Users/ariel089/Workspaces/bedson-middleware/src/main/java/io/ctdev/bedson/SalesforceFTPConnector.java
+/Users/ariel089/Workspaces/bedson-middleware/src/main/java/io/ctdev/bedson/QuoteService.java
+/Users/ariel089/Workspaces/bedson-middleware/src/main/java/io/ctdev/bedson/ContactService.java
+/Users/ariel089/Workspaces/bedson-middleware/src/main/java/io/ctdev/bedson/AccountService.java
+/Users/ariel089/Workspaces/bedson-middleware/src/main/java/io/ctdev/bedson/ProductService.java
+/Users/ariel089/Workspaces/bedson-middleware/src/main/java/io/ctdev/bedson/PriceBookService.java
