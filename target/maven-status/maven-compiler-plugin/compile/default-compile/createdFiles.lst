@@ -1,7 +1,2 @@
-io\ctdev\bedson\TestWrite.class
-io\ctdev\bedson\ContactService.class
-io\ctdev\bedson\ProductService.class
-io\ctdev\bedson\SalesforceFTPConnector.class
-io\ctdev\bedson\AccountService.class
-io\ctdev\bedson\PriceBookService.class
-io\ctdev\bedson\QuoteService.class
+io\ctdev\bedson\ReadFile.class
+io\ctdev\bedson\WriteFile.class
