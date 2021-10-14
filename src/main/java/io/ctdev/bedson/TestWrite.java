@@ -47,9 +47,11 @@ public class TestWrite extends HttpServlet {
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
             response.setContentType("application/octet-stream");
+            ServletOutputStream stream = response.getOutputStream();
             String initialString = body;
-            InputStream stream = new ByteArrayInputStream(initialString.getBytes());
-            ftpClient.storeFile(fileName, stream);
+            InputStream inStream = new ByteArrayInputStream(initialString.getBytes());
+            ftpClient.storeFile(fileName, inStream);
+            inStream.close();
             stream.close();
         } catch (Exception e) {
             PrintWriter out = response.getWriter();
