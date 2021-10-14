@@ -13,5 +13,27 @@
         <url-pattern>/SalesforceFTPConnector</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>AccountService</servlet-name>
+        <display-name>AccountService</display-name>
+        <description></description>
+        <servlet-class>io.ctdev.bedson.AccountService</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AccountService</servlet-name>
+        <url-pattern>/account</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>TestWrite</servlet-name>
+        <display-name>TestWrite</display-name>
+        <description></description>
+        <servlet-class>io.ctdev.bedson.TestWrite</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TestWrite</servlet-name>
+        <url-pattern>/write</url-pattern>
+    </servlet-mapping>
+
 
 </web-app>
