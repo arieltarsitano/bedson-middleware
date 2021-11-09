@@ -1,6 +1,7 @@
 package io.ctdev.bedson;
 
 import java.io.*;
+import java.util.Base64;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -41,14 +42,17 @@ public class WriteFile extends HttpServlet {
             String fileName = request.getHeader("filename");
             String body = request.getHeader("body");
 
+            byte[] inicial = Base64.getDecoder().decode(body);
+
             ftpClient.connect(server, port);
             ftpClient.login(user, pass);
             ftpClient.enterLocalPassiveMode();
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
             response.setContentType("application/octet-stream");
-            String initialString = body;
-            InputStream inStream = new ByteArrayInputStream(initialString.getBytes());
+            //String initialString = body;
+            //InputStream inStream = new ByteArrayInputStream(initialString.getBytes());
+            InputStream inStream = new ByteArrayInputStream(inicial);
             Boolean status = ftpClient.storeFile(fileName, inStream);
             response.setStatus(ftpClient.getReplyCode());
             response.getWriter().write(ftpClient.getReplyString());
