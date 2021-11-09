@@ -14,7 +14,6 @@ import org.apache.commons.net.ftp.FTPClient;
 
 public class WriteFile extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
      *      response)
@@ -43,6 +42,7 @@ public class WriteFile extends HttpServlet {
             String body = request.getHeader("body");
 
             byte[] inicial = Base64.getDecoder().decode(body);
+            
 
             ftpClient.connect(server, port);
             ftpClient.login(user, pass);

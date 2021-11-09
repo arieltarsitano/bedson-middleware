@@ -38,7 +38,7 @@ public class ReadFile extends HttpServlet {
             int port = Integer.parseInt(request.getHeader("port"));
             String user = request.getHeader("user");
             String pass = request.getHeader("pass");
-            String fileDir = request.getHeader("filedir");
+            String dir = request.getHeader("dir");
 
             ftpClient.connect(server, port);
             ftpClient.login(user, pass);
@@ -46,9 +46,14 @@ public class ReadFile extends HttpServlet {
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
             response.setContentType("application/octet-stream");
-            ServletOutputStream stream = response.getOutputStream();
-            ftpClient.retrieveFile(fileDir, stream);
-            stream.close();
+            //OutputStream outputStream = new ByteArrayOutputStream();
+            FTPUtil.downloadDirectory(ftpClient, dir, "", response.getOutputStream());
+
+            /*
+             * ServletOutputStream stream = response.getOutputStream();
+             * ftpClient.retrieveFile(fileDir, stream); stream.close();
+             */
+            response.getOutputStream().close();
         } catch (Exception e) {
             PrintWriter out = response.getWriter();
             out.println("Error is " + e.getMessage());
