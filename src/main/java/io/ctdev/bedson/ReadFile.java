@@ -3,7 +3,6 @@ package io.ctdev.bedson;
 import java.io.*;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,13 +45,14 @@ public class ReadFile extends HttpServlet {
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
             response.setContentType("application/octet-stream");
-            //OutputStream outputStream = new ByteArrayOutputStream();
-            FTPUtil.downloadDirectory(ftpClient, dir, "", response.getOutputStream());
-
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            FTPUtil.downloadDirectory(ftpClient, dir, "", outputStream); // response.getOutputStream());
+            
             /*
-             * ServletOutputStream stream = response.getOutputStream();
-             * ftpClient.retrieveFile(fileDir, stream); stream.close();
-             */
+            * ServletOutputStream stream = response.getOutputStream();
+            * ftpClient.retrieveFile(fileDir, stream); stream.close();
+            */
+            response.getOutputStream().write(outputStream.toByteArray());
             response.getOutputStream().close();
         } catch (Exception e) {
             PrintWriter out = response.getWriter();
