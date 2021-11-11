@@ -17,6 +17,9 @@ import org.json.JSONObject;
  * from a FTP server, using Apache Commons Net API.
  */
 public class FTPUtil {
+
+    public static JSONObject json = new JSONObject();
+
     /**
      * Download a whole directory from a FTP server.
      * 
@@ -62,7 +65,7 @@ public class FTPUtil {
                     //InputStream archivo = downloadSingleFile(ftpClient, filePath);
                     //System.out.println("Es un archivo: " + currentFileName);
                     ByteArrayOutputStream outArchivo = new ByteArrayOutputStream();
-                    boolean success = downloadSingleFile(ftpClient, filePath, outArchivo);
+                    boolean success = downloadSingleFile(ftpClient, currentFileName, outArchivo);
                     if (success == true) {
                         InputStream archivo = new ByteArrayInputStream(outArchivo.toByteArray());
                         formatearResultado(archivo, currentDir, outputStream);
@@ -99,9 +102,9 @@ public class FTPUtil {
     }
 
     public static boolean formatearResultado(InputStream archivo, String filePath, ByteArrayOutputStream output) {
-        System.out.println("-- File path: " + filePath);
-        String key = filePath.replace("/Salesforce/", "");
-        System.out.println("-- Key: " + key);
+        //System.out.println("-- File path: " + filePath);
+        //String key = filePath.replace("/Salesforce/", "");
+        System.out.println("-- Key: " + filePath);
 
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(archivo));
@@ -115,7 +118,7 @@ public class FTPUtil {
             LinkedList<Map<String, String>> result = new LinkedList<Map<String, String>>();
             String linea = null;
             int columnas = headers != null ? headers.length : 0;
-            JSONObject json = new JSONObject();
+            //JSONObject json = new JSONObject();
             
 
             while ((linea = br.readLine()) != null) {
@@ -126,7 +129,7 @@ public class FTPUtil {
                 }
                 result.add(res);
             }
-            json.put(key, result);
+            json.put(filePath, result);
             String body = json.toString();
 
             System.out.println(body);
