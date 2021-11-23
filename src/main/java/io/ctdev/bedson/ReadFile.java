@@ -1,6 +1,7 @@
 package io.ctdev.bedson;
 
 import java.io.*;
+import java.util.Base64;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -38,6 +39,7 @@ public class ReadFile extends HttpServlet {
             String user = request.getHeader("user");
             String pass = request.getHeader("pass");
             String dir = request.getHeader("dir");
+            //String contentType = request.getHeader("contentType");
 
             ftpClient.connect(server, port);
             ftpClient.login(user, pass);
@@ -46,13 +48,15 @@ public class ReadFile extends HttpServlet {
 
             response.setContentType("application/octet-stream");
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            FTPUtil.downloadDirectory(ftpClient, dir, "", outputStream); // response.getOutputStream());
-            
+            FTPUtil.downloadDirectory(ftpClient, dir, "", outputStream); // , response.getOutputStream());
+
             /*
-            * ServletOutputStream stream = response.getOutputStream();
-            * ftpClient.retrieveFile(fileDir, stream); stream.close();
-            */
-            response.getOutputStream().write(outputStream.toByteArray());
+             * ServletOutputStream stream = response.getOutputStream();
+             * ftpClient.retrieveFile(fileDir, stream); stream.close();
+             */
+            byte[] out = Base64.getEncoder().encode(outputStream.toByteArray());
+            response.getOutputStream().write(out);
+            //response.getOutputStream().write(outputStream.toByteArray());
             response.getOutputStream().close();
         } catch (Exception e) {
             PrintWriter out = response.getWriter();
