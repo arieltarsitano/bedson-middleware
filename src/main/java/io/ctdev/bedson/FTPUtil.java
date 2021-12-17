@@ -5,12 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-//import java.nio.charset.Charset;
-//import java.net.http.HttpResponse.ResponseInfo;
+import java.nio.charset.Charset;
 import java.io.BufferedReader;
-
-//import java.util.*;
-
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
@@ -37,8 +33,6 @@ public class FTPUtil {
         }
 
         FTPFile[] subFiles = ftpClient.listFiles(dirToList);
-        // System.out.println("Cantidad de archivos en " + dirToList + ": " +
-        // subFiles.length);
 
         if (subFiles != null && subFiles.length > 0) {
             for (FTPFile aFile : subFiles) {
@@ -62,12 +56,12 @@ public class FTPUtil {
                 } else {
                     // si es archivo, lo recuperamos
                     // InputStream archivo = downloadSingleFile(ftpClient, filePath);
-                    System.out.println("Archivo: " + currentFileName);
-                    //ByteArrayOutputStream outTemp = new ByteArrayOutputStream();
-                    boolean success = downloadSingleFile(ftpClient, filePath, outputStream);// outTemp);
+                    // System.out.println("Archivo: " + currentFileName);
+                    ByteArrayOutputStream outTemp = new ByteArrayOutputStream();
+                    boolean success = downloadSingleFile(ftpClient, filePath, outTemp);
                     if (success == true) {
-                        //InputStream archivo = new ByteArrayInputStream(outTemp.toByteArray());
-                        //decodificar(archivo, outputStream);
+                        InputStream archivo = new ByteArrayInputStream(outTemp.toByteArray());
+                        decodificar(archivo, outputStream);
                         // InputStream archivo = new ByteArrayInputStream(outArchivo.toByteArray());
                         System.out.println("Archivo descargado: " + filePath);
                     } else {
@@ -89,23 +83,19 @@ public class FTPUtil {
      */
     public static boolean downloadSingleFile(FTPClient ftpClient, String remoteFilePath, ByteArrayOutputStream output)
             throws IOException {
-
         try {
-            //System.out.println("Remote path: " + remoteFilePath);
             return ftpClient.retrieveFile(remoteFilePath, output);
             // return ftpClient.retrieveFileStream(remoteFilePath);
-
         } catch (IOException ex) {
             throw ex;
         }
     }
 
     public static void decodificar(InputStream archivo, OutputStream outputStream) {
-        // String charset = "UTF-8";
+        String charset = "ISO-8859-1" ; //"UTF-8";
         try {
-            // BufferedReader br = new BufferedReader(new InputStreamReader(archivo,
-            // Charset.forName(charset)));
-            BufferedReader br = new BufferedReader(new InputStreamReader(archivo));
+            BufferedReader br = new BufferedReader(new InputStreamReader(archivo, Charset.forName(charset)));
+            //BufferedReader br = new BufferedReader(new InputStreamReader(archivo));
             String linea, headers;
             char enter = '\n';
             headers = br.readLine();
