@@ -61,7 +61,7 @@ public class FTPUtil {
                     boolean success = downloadSingleFile(ftpClient, filePath, outTemp);
                     if (success == true) {
                         InputStream archivo = new ByteArrayInputStream(outTemp.toByteArray());
-                        decodificar(archivo, outputStream);
+                        decodificar(archivo, outputStream, "ISO-8859-1");
                         // InputStream archivo = new ByteArrayInputStream(outArchivo.toByteArray());
                         System.out.println("Archivo descargado: " + filePath);
                     } else {
@@ -91,8 +91,8 @@ public class FTPUtil {
         }
     }
 
-    public static void decodificar(InputStream archivo, OutputStream outputStream) {
-        String charset = "ISO-8859-1" ; //"UTF-8";
+    public static void decodificar(InputStream archivo, OutputStream outputStream, String charset) {
+        //String charset = "ISO-8859-1" ; //"UTF-8";
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(archivo, Charset.forName(charset)));
             //BufferedReader br = new BufferedReader(new InputStreamReader(archivo));
@@ -107,6 +107,59 @@ public class FTPUtil {
             }
         } catch (Exception e) {
             System.out.println(e.getMessage() + " | " + e.getStackTrace().toString());
+        }
+    }
+
+
+/**
+     * Realiza el backup de un directorio completo del servidor FTP.
+     * 
+     * @param ftpClient  Instancia de FTPClient (clase org.apache.commons.net.ftp.FTPClient).
+     * @param parentDir  Path del directorio padre.
+     * @param currentDir Path del directorio actual.
+     * @param backupDir Path de la carpeta backup de destino.
+     * @throws IOException En caso de algún error de red o IO.
+     */
+    public static void backupFile(FTPClient ftpClient, String parentDir, String currentDir, String backupDir) throws IOException {
+        String dirToList = parentDir;
+        if (!currentDir.equals("")) {
+            dirToList += "/" + currentDir;
+        }
+
+        FTPFile[] subFiles = ftpClient.listFiles(dirToList);
+
+        if (subFiles != null && subFiles.length > 0) {
+            for (FTPFile aFile : subFiles) {
+                // tomamos el nombre del archivo o carpeta
+                String currentFileName = aFile.getName();
+                if (currentFileName.equals(".") || currentFileName.equals("..")) {
+                    // skip parent directory and the directory itself
+                    continue;
+                }
+
+                // vamos armando las rutas para llegar hasta los archivos
+                String filePath = parentDir + "/" + currentDir + "/" + currentFileName;
+                if (currentDir.equals("")) {
+                    filePath = parentDir + "/" + currentFileName;
+                }
+
+                // si es una carpeta, volvemos a entrar
+                if (aFile.isDirectory()) {
+                    //System.out.println("Es una carpeta: " + currentFileName);
+                    backupFile(ftpClient, parentDir, currentDir, backupDir);
+                } else {
+                    //System.out.println("Archivo: " + currentFileName);
+                    //System.out.println("Path completo: " + filePath);
+                    //lo movemos:
+                    String pathBackup = backupDir + "/" + currentFileName;
+                    boolean success = ftpClient.rename(filePath, pathBackup);
+                    if (success == true) {
+                        System.out.println("Archivo de backup generado: " + pathBackup);
+                    } else {
+                        System.out.println("No se pudo realizar backup del archivo: " + pathBackup);
+                    }
+                }
+            }
         }
     }
 }

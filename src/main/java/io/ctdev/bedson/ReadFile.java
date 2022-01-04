@@ -55,6 +55,8 @@ public class ReadFile extends HttpServlet {
             // org.apache.commons.net.util.Base64.encodeBase64(outputStream.toByteArray());
             // byte[] out = new String(outputStream.toByteArray(),
             // StandardCharsets.UTF_8).getBytes(StandardCharsets.UTF_8);
+
+            System.out.println(new String(outputStream.toByteArray()));
             response.getOutputStream().write(outputStream.toByteArray());
             response.getOutputStream().close();
         } catch (Exception e) {

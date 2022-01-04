@@ -24,5 +24,16 @@
         <url-pattern>/writefile</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>BackupFile</servlet-name>
+        <display-name>BackupFile</display-name>
+        <description></description>
+        <servlet-class>io.ctdev.bedson.BackupFile</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BackupFile</servlet-name>
+        <url-pattern>/backupfile</url-pattern>
+    </servlet-mapping>
+
 
 </web-app>
