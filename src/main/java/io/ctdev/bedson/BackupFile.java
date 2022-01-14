@@ -5,7 +5,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
@@ -45,8 +44,8 @@ public class BackupFile extends HttpServlet {
 
             response.setContentType("application/octet-stream");
 
-            //Boolean status = ftpClient.rename(pathOrigen, pathDestino);
             FTPUtil.backupFile(ftpClient, pathOrigen, "", pathDestino);
+            
             response.setStatus(ftpClient.getReplyCode());
             response.getWriter().write(ftpClient.getReplyString());
             response.getWriter().flush();

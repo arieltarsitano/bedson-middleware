@@ -10,10 +10,7 @@ import java.io.BufferedReader;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
-/**
- * This utility class implements a method that downloads a directory completely
- * from a FTP server, using Apache Commons Net API.
- */
+
 public class FTPUtil {
 
     /**
@@ -55,14 +52,12 @@ public class FTPUtil {
                     downloadDirectory(ftpClient, dirToList, currentFileName, outputStream);
                 } else {
                     // si es archivo, lo recuperamos
-                    // InputStream archivo = downloadSingleFile(ftpClient, filePath);
                     // System.out.println("Archivo: " + currentFileName);
                     ByteArrayOutputStream outTemp = new ByteArrayOutputStream();
                     boolean success = downloadSingleFile(ftpClient, filePath, outTemp);
                     if (success == true) {
                         InputStream archivo = new ByteArrayInputStream(outTemp.toByteArray());
-                        decodificar(archivo, outputStream, "ISO-8859-1");
-                        // InputStream archivo = new ByteArrayInputStream(outArchivo.toByteArray());
+                        decodificar(archivo, outputStream, "UTF-8"); //"ISO-8859-1");
                         System.out.println("Archivo descargado: " + filePath);
                     } else {
                         System.out.println("No se pudo descargar el archivo: " + filePath);
@@ -85,7 +80,6 @@ public class FTPUtil {
             throws IOException {
         try {
             return ftpClient.retrieveFile(remoteFilePath, output);
-            // return ftpClient.retrieveFileStream(remoteFilePath);
         } catch (IOException ex) {
             throw ex;
         }
@@ -95,7 +89,6 @@ public class FTPUtil {
         //String charset = "ISO-8859-1" ; //"UTF-8";
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(archivo, Charset.forName(charset)));
-            //BufferedReader br = new BufferedReader(new InputStreamReader(archivo));
             String linea, headers;
             char enter = '\n';
             headers = br.readLine();
@@ -111,7 +104,7 @@ public class FTPUtil {
     }
 
 
-/**
+    /**
      * Realiza el backup de un directorio completo del servidor FTP.
      * 
      * @param ftpClient  Instancia de FTPClient (clase org.apache.commons.net.ftp.FTPClient).
@@ -145,11 +138,8 @@ public class FTPUtil {
 
                 // si es una carpeta, volvemos a entrar
                 if (aFile.isDirectory()) {
-                    //System.out.println("Es una carpeta: " + currentFileName);
                     backupFile(ftpClient, parentDir, currentDir, backupDir);
                 } else {
-                    //System.out.println("Archivo: " + currentFileName);
-                    //System.out.println("Path completo: " + filePath);
                     //lo movemos:
                     String pathBackup = backupDir + "/" + currentFileName;
                     boolean success = ftpClient.rename(filePath, pathBackup);

@@ -44,19 +44,10 @@ public class ReadFile extends HttpServlet {
 
             response.setContentType("application/octet-stream");
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            FTPUtil.downloadDirectory(ftpClient, dir, "", outputStream); // , response.getOutputStream());
-
-            /*
-             * ServletOutputStream stream = response.getOutputStream();
-             * ftpClient.retrieveFile(fileDir, stream); stream.close();
-             */
-            // byte[] out = Base64.getEncoder().encode(outputStream.toByteArray());
-            // byte[] out =
-            // org.apache.commons.net.util.Base64.encodeBase64(outputStream.toByteArray());
-            // byte[] out = new String(outputStream.toByteArray(),
-            // StandardCharsets.UTF_8).getBytes(StandardCharsets.UTF_8);
+            FTPUtil.downloadDirectory(ftpClient, dir, "", outputStream);
 
             System.out.println(new String(outputStream.toByteArray()));
+            
             response.getOutputStream().write(outputStream.toByteArray());
             response.getOutputStream().close();
         } catch (Exception e) {

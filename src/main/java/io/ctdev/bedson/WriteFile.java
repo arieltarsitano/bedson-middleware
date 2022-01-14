@@ -2,12 +2,10 @@ package io.ctdev.bedson;
 
 import java.io.*;
 import java.util.Base64;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
@@ -40,7 +38,6 @@ public class WriteFile extends HttpServlet {
             String fileName = request.getHeader("filename");
             String body = request.getHeader("body");
 
-            //byte[] inicial = Base64.getDecoder().decode(body.getBytes(StandardCharsets.UTF_8));
             byte[] inicial = Base64.getDecoder().decode(body);
 
             System.out.println("Body string:");
@@ -55,18 +52,6 @@ public class WriteFile extends HttpServlet {
 
             response.setContentType("application/octet-stream");
             InputStream inStream = new ByteArrayInputStream(inicial);
-
-            /*ByteArrayOutputStream temp = new ByteArrayOutputStream();
-            FTPUtil.decodificar(new ByteArrayInputStream(inicial), temp, "ISO-8859-1"); //ISO-8859-1
-            InputStream inStream = new ByteArrayInputStream(temp.toByteArray());*/
-
-            /*System.out.println("Body decoded:");
-            BufferedReader br = new BufferedReader(new InputStreamReader(inStream, Charset.forName("UTF-8")));
-            String linea, data = "";
-            while((linea = br.readLine()) != null){
-                data += linea;
-            }
-            System.out.println(data);*/
 
             Boolean status = ftpClient.storeFile(fileName, inStream);
             response.setStatus(ftpClient.getReplyCode());
