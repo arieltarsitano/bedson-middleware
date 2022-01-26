@@ -53,6 +53,7 @@ public class ReadFile extends HttpServlet {
         } catch (Exception e) {
             PrintWriter out = response.getWriter();
             out.println("Error is " + e.getMessage());
+            response.setStatus(500);
         } finally {
             if (ftpClient.isConnected()) {
                 ftpClient.logout();

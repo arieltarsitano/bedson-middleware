@@ -57,7 +57,8 @@ public class FTPUtil {
                     boolean success = downloadSingleFile(ftpClient, filePath, outTemp);
                     if (success == true) {
                         InputStream archivo = new ByteArrayInputStream(outTemp.toByteArray());
-                        decodificar(archivo, outputStream, "UTF-8"); //"ISO-8859-1");
+                        //decodificar(archivo, outputStream, "UTF-8"); //"ISO-8859-1");
+                        decodificar(archivo, outputStream);
                         System.out.println("Archivo descargado: " + filePath);
                     } else {
                         System.out.println("No se pudo descargar el archivo: " + filePath);
@@ -85,10 +86,11 @@ public class FTPUtil {
         }
     }
 
-    public static void decodificar(InputStream archivo, OutputStream outputStream, String charset) {
+    public static void decodificar(InputStream archivo, OutputStream outputStream) {//, String charset) {
         //String charset = "ISO-8859-1" ; //"UTF-8";
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(archivo, Charset.forName(charset)));
+            //BufferedReader br = new BufferedReader(new InputStreamReader(archivo, Charset.forName(charset)));
+            BufferedReader br = new BufferedReader(new InputStreamReader(archivo));
             String linea, headers;
             char enter = '\n';
             headers = br.readLine();
