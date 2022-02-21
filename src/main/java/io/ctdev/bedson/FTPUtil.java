@@ -5,13 +5,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.io.BufferedReader;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
+import org.json.JSONObject;
 
 
 public class FTPUtil {
+
+    public static JSONObject json = new JSONObject();
 
     /**
      * Descarga un directorio completo del servidor FTP.
@@ -23,7 +25,7 @@ public class FTPUtil {
      * @throws IOException En caso de algún error de red o IO.
      */
     public static void downloadDirectory(FTPClient ftpClient, String parentDir, String currentDir,
-            ByteArrayOutputStream outputStream) throws IOException {
+    ByteArrayOutputStream outputStream) throws IOException {
         String dirToList = parentDir;
         if (!currentDir.equals("")) {
             dirToList += "/" + currentDir;
@@ -57,14 +59,15 @@ public class FTPUtil {
                     boolean success = downloadSingleFile(ftpClient, filePath, outTemp);
                     if (success == true) {
                         InputStream archivo = new ByteArrayInputStream(outTemp.toByteArray());
-                        //decodificar(archivo, outputStream, "UTF-8"); //"ISO-8859-1");
-                        decodificar(archivo, outputStream);
+                        decodificar(currentFileName, archivo, outputStream);
                         System.out.println("Archivo descargado: " + filePath);
                     } else {
                         System.out.println("No se pudo descargar el archivo: " + filePath);
                     }
                 }
             }
+            outputStream.write(json.toString().getBytes());
+            json.clear();
         }
     }
 
@@ -86,25 +89,31 @@ public class FTPUtil {
         }
     }
 
-    public static void decodificar(InputStream archivo, OutputStream outputStream) {//, String charset) {
-        //String charset = "ISO-8859-1" ; //"UTF-8";
+
+    public static void decodificar(String nombreArchivo, InputStream archivo, ByteArrayOutputStream outputStream) {
         try {
-            //BufferedReader br = new BufferedReader(new InputStreamReader(archivo, Charset.forName(charset)));
             BufferedReader br = new BufferedReader(new InputStreamReader(archivo));
-            String linea, headers;
-            char enter = '\n';
-            headers = br.readLine();
-            outputStream.write(headers.getBytes());
-            // leemos las filas
+            String linea = "";
+            String[] headers = br.readLine().split(";");
+            int columnas = headers.length;
+            
+            JSONObject body = new JSONObject();
+            int nroLinea = 1;
             while ((linea = br.readLine()) != null) {
-                outputStream.write(enter);
-                outputStream.write(linea.getBytes());
+                JSONObject line = new JSONObject();
+                
+                String[] data = linea.split(";", columnas);
+                for(int i = 0; i < columnas; i++){
+                    line.put(headers[i], data[i] == null || data[i].isEmpty()? "" : data[i]);
+                }
+                body.put(nroLinea + "", line);
+                nroLinea++;
             }
+            json.put(nombreArchivo, body);
         } catch (Exception e) {
             System.out.println(e.getMessage() + " | " + e.getStackTrace().toString());
         }
     }
-
 
     /**
      * Realiza el backup de un directorio completo del servidor FTP.
