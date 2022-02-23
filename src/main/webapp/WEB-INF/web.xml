@@ -35,5 +35,15 @@
         <url-pattern>/backupfile</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>ErrorFile</servlet-name>
+        <display-name>ErrorFile</display-name>
+        <description></description>
+        <servlet-class>io.ctdev.bedson.ErrorFile</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ErrorFile</servlet-name>
+        <url-pattern>/errorfile</url-pattern>
+    </servlet-mapping>
 
 </web-app>

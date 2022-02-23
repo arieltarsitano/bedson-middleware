@@ -163,4 +163,30 @@ public class FTPUtil {
             }
         }
     }
+
+
+    /**
+     * Realiza el backup de un directorio completo del servidor FTP.
+     * 
+     * @param ftpClient  Instancia de FTPClient (clase org.apache.commons.net.ftp.FTPClient).
+     * @param parentDir  Path del directorio padre.
+     * @param currentDir Path del directorio actual.
+     * @param backupDir Path de la carpeta backup de destino.
+     * @throws IOException En caso de algún error de red o IO.
+     */
+    public static void errorFile(FTPClient ftpClient, String filePath, String backupDir) throws IOException {
+        FTPFile aFile = ftpClient.listFiles(filePath)[0];
+
+        if (aFile != null) {
+            String currentFileName = aFile.getName();
+
+            String pathBackup = backupDir + "/" + currentFileName;
+            boolean success = ftpClient.rename(filePath, pathBackup);
+            if (success == true) {
+                System.out.println("Archivo de backup generado: " + pathBackup);
+            } else {
+                System.out.println("No se pudo realizar backup del archivo: " + pathBackup);
+            }
+        }
+    }
 }
