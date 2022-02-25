@@ -44,7 +44,8 @@ public class BackupFile extends HttpServlet {
 
             response.setContentType("application/octet-stream");
 
-            FTPUtil.backupFile(ftpClient, pathOrigen, "", pathDestino);
+            //FTPUtil.backupFile(ftpClient, pathOrigen, "", pathDestino);
+            FTPUtil.backupFile(ftpClient, pathOrigen, pathDestino);
             
             response.setStatus(ftpClient.getReplyCode());
             response.getWriter().write(ftpClient.getReplyString());

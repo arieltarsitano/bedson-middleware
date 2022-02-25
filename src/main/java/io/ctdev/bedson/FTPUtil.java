@@ -5,6 +5,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.io.BufferedReader;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -32,11 +36,24 @@ public class FTPUtil {
         }
 
         FTPFile[] subFiles = ftpClient.listFiles(dirToList);
+        List<FTPFile> archivos = Arrays.asList(subFiles);
+        Collections.sort(archivos, new Comparator<FTPFile>() {
+            @Override
+            public int compare(FTPFile o1, FTPFile o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
 
-        if (subFiles != null && subFiles.length > 0) {
-            for (FTPFile aFile : subFiles) {
+        /*for(FTPFile f : archivos){
+            System.out.println(f.getName());
+        }*/
+
+        if (archivos != null && archivos.size() > 0) {
+            for (FTPFile aFile : archivos) {
                 // tomamos el nombre del archivo o carpeta
                 String currentFileName = aFile.getName();
+                System.out.println(currentFileName);
+
                 if (currentFileName.equals(".") || currentFileName.equals("..")) {
                     // skip parent directory and the directory itself
                     continue;
@@ -115,66 +132,16 @@ public class FTPUtil {
         }
     }
 
+
     /**
-     * Realiza el backup de un directorio completo del servidor FTP.
+     * Realiza el backup de un archivo del servidor FTP.
      * 
      * @param ftpClient  Instancia de FTPClient (clase org.apache.commons.net.ftp.FTPClient).
-     * @param parentDir  Path del directorio padre.
-     * @param currentDir Path del directorio actual.
+     * @param filePath  Path del archivo a mover.
      * @param backupDir Path de la carpeta backup de destino.
      * @throws IOException En caso de algún error de red o IO.
      */
-    public static void backupFile(FTPClient ftpClient, String parentDir, String currentDir, String backupDir) throws IOException {
-        String dirToList = parentDir;
-        if (!currentDir.equals("")) {
-            dirToList += "/" + currentDir;
-        }
-
-        FTPFile[] subFiles = ftpClient.listFiles(dirToList);
-
-        if (subFiles != null && subFiles.length > 0) {
-            for (FTPFile aFile : subFiles) {
-                // tomamos el nombre del archivo o carpeta
-                String currentFileName = aFile.getName();
-                if (currentFileName.equals(".") || currentFileName.equals("..")) {
-                    // skip parent directory and the directory itself
-                    continue;
-                }
-
-                // vamos armando las rutas para llegar hasta los archivos
-                String filePath = parentDir + "/" + currentDir + "/" + currentFileName;
-                if (currentDir.equals("")) {
-                    filePath = parentDir + "/" + currentFileName;
-                }
-
-                // si es una carpeta, volvemos a entrar
-                if (aFile.isDirectory()) {
-                    backupFile(ftpClient, parentDir, currentDir, backupDir);
-                } else {
-                    //lo movemos:
-                    String pathBackup = backupDir + "/" + currentFileName;
-                    boolean success = ftpClient.rename(filePath, pathBackup);
-                    if (success == true) {
-                        System.out.println("Archivo de backup generado: " + pathBackup);
-                    } else {
-                        System.out.println("No se pudo realizar backup del archivo: " + pathBackup);
-                    }
-                }
-            }
-        }
-    }
-
-
-    /**
-     * Realiza el backup de un directorio completo del servidor FTP.
-     * 
-     * @param ftpClient  Instancia de FTPClient (clase org.apache.commons.net.ftp.FTPClient).
-     * @param parentDir  Path del directorio padre.
-     * @param currentDir Path del directorio actual.
-     * @param backupDir Path de la carpeta backup de destino.
-     * @throws IOException En caso de algún error de red o IO.
-     */
-    public static void errorFile(FTPClient ftpClient, String filePath, String backupDir) throws IOException {
+    public static void backupFile(FTPClient ftpClient, String filePath, String backupDir) throws IOException {
         FTPFile aFile = ftpClient.listFiles(filePath)[0];
 
         if (aFile != null) {
